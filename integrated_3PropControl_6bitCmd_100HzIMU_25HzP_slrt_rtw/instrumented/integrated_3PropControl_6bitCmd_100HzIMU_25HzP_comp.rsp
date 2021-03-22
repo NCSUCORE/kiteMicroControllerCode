@@ -1,0 +1,10 @@
+-IC:\Users\MAE-VermillionLab\Desktop\git\kiteMicroControllerCode
+-IC:\Users\MAE-VermillionLab\Desktop\git\kiteMicroControllerCode\integrated_3PropControl_6bitCmd_100HzIMU_25HzP_slrt_rtw
+-I"C:\Program Files\MATLAB\R2020a\extern\include"
+-I"C:\Program Files\MATLAB\R2020a\simulink\include"
+-I"C:\Program Files\MATLAB\R2020a\rtw\c\src"
+-IC:\ProgramData\Speedgoat\speedgoatlib\R2020a\9.1.2
+-IC:\ProgramData\Speedgoat\speedgoatlib\R2020a\9.1.2\sg_blocks\common\libsg
+-IC:\ProgramData\Speedgoat\speedgoatlib\R2020a\9.1.2\sg_blocks\serial\include
+-I"C:\Program Files\MATLAB\R2020a\simulink\include\messages"
+-I"C:\Program Files\MATLAB\R2020a\toolbox\rtw\targets\xpc\target\build\xpcblocks\include"
