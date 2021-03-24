@@ -50,25 +50,26 @@ void setup()
   pinMode(13, OUTPUT);  //Used for checking if UART to RS485 transceiver is working (switching on the LED)
   digitalWrite(13,HIGH);
 
-//  // Set up I2C depth sensor input
-//  Wire.begin();
-//  while (!sensor.init()) {
-//    delay(5000);
-//  }
-//  sensor.setModel(MS5837::MS5837_02BA);
-//  sensor.setFluidDensity(998.2); // kg/m^3 (freshwater, 1029 for seawater)
+  // Set up I2C depth sensor input
+  Wire.begin();
+  while (!sensor.init()) {
+    delay(5000);
+  }
+  sensor.setModel(MS5837::MS5837_02BA);
+  sensor.setFluidDensity(998.2); // kg/m^3 (freshwater, 1029 for seawater)
 
   // Delay before running loop()
   delay(1000);
 
-//  // Get first depth sensor reading
-//  sensor.readPT1();
-//  delay(20);
-//  sensor.readPT2();
-//  delay(20);
-//  sensor.readPT3();
-//  p.f = sensor.pressure();
-//  d.f = sensor.depth();
+  // Get first depth sensor reading
+  sensor.readPT1();
+  delay(20);
+  sensor.readPT2();
+  delay(20);
+  sensor.readPT3();
+
+  p.f = sensor.pressure();
+  d.f = sensor.depth();
 }
 
 void nextIMUsample() {
@@ -135,26 +136,32 @@ void writeToSpeedgoat() {
 
 void loop()
 {
-//  // Begin next depth sensor reading
-//  sensor.readPT1(); //need to do work for 20ms after this call
+  // Begin next depth sensor reading
+  sensor.readPT1(); //need to do work for 20ms after this call
 
-//  // Get and transmit 2 IMU samples (at 100Hz >=20ms)
-//  for (int i = 0; i < 2; i++) {
-//    nextIMUsample(); // Get an IMU sample
-//    writeToSpeedgoat(); // Transmit IMU and retransmit old pressure data
-//  }
+  // Get and transmit 2 IMU samples (at 100Hz >=30ms)
+  for (int i = 0; i < 2; i++) {
+    nextIMUsample(); // Get an IMU sample
+    writeToSpeedgoat(); // Transmit IMU and retransmit old pressure data
+  }
 
-//  // Continue next depth sensor reading
-//  sensor.readPT2(); //need to do work for 20ms after this call
+  // Continue next depth sensor reading
+  sensor.readPT2(); //need to do work for 20ms after this call
+
+  // Get and transmit 2 IMU samples (at 100Hz >=20ms)
+  for (int i = 0; i < 2; i++) {
+    nextIMUsample(); // Get an IMU sample
+    writeToSpeedgoat(); // Transmit IMU and retransmit old pressure data
+  }
 
   // Get and transmit an IMU sample
   nextIMUsample(); // Get an IMU sample
   writeToSpeedgoat(); // Transmit IMU and retransmit old pressure data
 
-//  // Finish and get next depth sensor reading, get an IMU sample and transmit both samples
-//  sensor.readPT3();
-//  nextIMUsample(); // Get an IMU sample
-//  p.f = sensor.pressure();
-//  d.f = sensor.depth();
-//  writeToSpeedgoat();
+  // Finish and get next depth sensor reading, get an IMU sample and transmit both samples
+  sensor.readPT3();
+  nextIMUsample(); // Get an IMU sample
+  p.f = sensor.pressure();
+  d.f = sensor.depth();
+  writeToSpeedgoat();
 }
