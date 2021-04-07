@@ -8,9 +8,15 @@
 #define MS5837_CONVERT_D1_8192    0x4A
 #define MS5837_CONVERT_D1_4096    0x48
 #define MS5837_CONVERT_D1_2048    0x46
+#define MS5837_CONVERT_D1_1024    0x44
+#define MS5837_CONVERT_D1_512     0x42
+#define MS5837_CONVERT_D1_256     0x40
 #define MS5837_CONVERT_D2_8192    0x5A
 #define MS5837_CONVERT_D2_4096    0x58
 #define MS5837_CONVERT_D2_2048    0x56
+#define MS5837_CONVERT_D2_1024    0x54
+#define MS5837_CONVERT_D2_512     0x52
+#define MS5837_CONVERT_D2_256     0x50
 
 const float MS5837::Pa = 100.0f;
 const float MS5837::bar = 0.001f;
@@ -61,15 +67,15 @@ void MS5837::setFluidDensity(float density) {
 	fluidDensity = density;
 }
 
-//Need to do work for 20ms after calling this function
+//Need to do work for ??ms after calling this function
 void MS5837::readPT1() {
 	// Request D1 conversion
 	Wire.beginTransmission(MS5837_ADDR);
-	Wire.write(MS5837_CONVERT_D1_8192);
+	Wire.write(MS5837_CONVERT_D1_512);
 	Wire.endTransmission();
 }
 
-//Need to do work for 20ms after calling this function
+//Need to do work for ??ms after calling this function
 void MS5837::readPT2() {
   Wire.beginTransmission(MS5837_ADDR);
   Wire.write(MS5837_ADC_READ);
@@ -83,7 +89,7 @@ void MS5837::readPT2() {
   
   // Request D2 conversion
   Wire.beginTransmission(MS5837_ADDR);
-  Wire.write(MS5837_CONVERT_D2_8192);
+  Wire.write(MS5837_CONVERT_D2_512);
   Wire.endTransmission();
 }
 
