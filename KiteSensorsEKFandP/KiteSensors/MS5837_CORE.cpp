@@ -71,7 +71,7 @@ void MS5837::setFluidDensity(float density) {
 void MS5837::readPT1() {
 	// Request D1 conversion
 	Wire.beginTransmission(MS5837_ADDR);
-	Wire.write(MS5837_CONVERT_D1_512);
+	Wire.write(MS5837_CONVERT_D1_256);
 	Wire.endTransmission();
 }
 
@@ -89,7 +89,7 @@ void MS5837::readPT2() {
   
   // Request D2 conversion
   Wire.beginTransmission(MS5837_ADDR);
-  Wire.write(MS5837_CONVERT_D2_512);
+  Wire.write(MS5837_CONVERT_D2_256);
   Wire.endTransmission();
 }
 

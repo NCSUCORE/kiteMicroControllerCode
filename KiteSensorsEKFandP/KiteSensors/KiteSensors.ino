@@ -20,7 +20,7 @@ HardwareSerial SerialRxTx(1); //RX, TX
 
 uint8_t resp;
 
-unsigned long timer0;
+unsigned long timer0; //TODO delete?
 
 union Data {
   uint32_t i;
@@ -44,34 +44,39 @@ char sgData[150]; //TODO delete this!
 
 void setup()
 {
+  Serial.begin(115200);
+  Serial.println("Beginning code.");
+  
   // Set up IMU
   resp = imuInitFromSaved(115200); //Baud rates: 9600,19200,115200,230400,460800,921600
 
   // Set up UART output to external RS485 module
   SerialRxTx.begin(115200); //This is the software serial connected to the RX and TX pins. We can't see the output in the COM ports.  //TODO increase by switching to HW serial TODO
-  pinMode(13, OUTPUT);  //Used for checking if UART to RS485 transceiver is working (switching on the LED)
-  digitalWrite(13, HIGH);
 
   // Set up I2C depth sensor input
-  Wire.begin();
-  while (!sensor.init()) {
-    delay(5000);
-  }
-  sensor.setModel(MS5837::MS5837_02BA);
-  sensor.setFluidDensity(998.2); // kg/m^3 (freshwater, 1029 for seawater)
+//  Wire.begin();
+//  while (!sensor.init()) {
+//    delay(5000);
+//  }
+//  sensor.setModel(MS5837::MS5837_02BA);
+//  sensor.setFluidDensity(998.2); // kg/m^3 (freshwater, 1029 for seawater)
 
   // Delay before running loop()
   delay(1000);
 
   // Get first depth sensor reading
-  sensor.readPT1();
-  delay(20);
-  sensor.readPT2();
-  delay(20);
-  sensor.readPT3();
+//  sensor.readPT1();
+//  delay(20);
+//  sensor.readPT2();
+//  delay(20);
+//  sensor.readPT3();
 
-  p.f = sensor.pressure();
-  d.f = sensor.depth();
+//  p.f = sensor.pressure();
+//  d.f = sensor.depth();
+
+  // Light red LED
+  pinMode(13, OUTPUT);  //Used for checking if UART to RS485 transceiver is working (switching on the LED)
+  digitalWrite(13, HIGH);
 }
 
 void nextIMUsample() {
@@ -135,29 +140,35 @@ void writeToSpeedgoat() {
 void loop()
 {
   // Wait for IMU sample
-  while(imuSerialAvailable() <= 0){
+  imuSerialFlush();
+  Serial.println(imuSerialAvailable());
+  while (imuSerialAvailable() < 38) {
+    Serial.println(imuSerialAvailable());
+//    delayMicroseconds(100);
     delay(1);
   }
 
   // Begin next depth sensor reading and get timer start time
-  sensor.readPT1(); //need to do work for ??ms after this call
-  
+//  sensor.readPT1(); //need to do work for ??ms after this call
+
   // Get and transmit an IMU sample
   nextIMUsample(); // Get an IMU sample
-  writeToSpeedgoat(); // Transmit IMU and old pressure data
+//  writeToSpeedgoat(); // Transmit IMU and old pressure data
 
   // Wait for depth sensor
-  delay(3);
-  
+//  delayMicroseconds(700);
+//  delay(2);
+
   // Continue next depth sensor reading
-  sensor.readPT2(); //need to do work for ??ms after this call
+//  sensor.readPT2(); //need to do work for ??ms after this call
 
   // Wait for depth sensor
-  delay(3);
+//  delayMicroseconds(700);
+//  delay(2);
 
   // Finish depth sensor calc and get depth sensor reading
-  sensor.readPT3();
-  p.f = sensor.pressure();
-  d.f = sensor.depth();
+//  sensor.readPT3();
+//  p.f = sensor.pressure();
+//  d.f = sensor.depth();
   writeToSpeedgoat(); // Transmit pressure data and old IMU data
 }
