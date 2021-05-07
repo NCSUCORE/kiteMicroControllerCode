@@ -30,7 +30,7 @@ void setup() {
 
   servo_starboard.attach(14,1334,1666);
   servo_port.attach(12,1334,1666);
-  servo_elevator.attach(32,1334,1666);
+  servo_elevator.attach(32,1222,1778);
   servo_rudder.attach(15,1334,1666);
 
   servo_starboard.writeMicroseconds(starCMD);
@@ -60,10 +60,11 @@ void loop() {
     arr[i] = mySerial.read();
   }
 
-  starCMD = (arr[1]<<8) + arr[0];
-  portCMD = 3000-starCMD;
+  starCMD = 3000-((arr[1]<<8) + arr[0]);
+  portCMD = starCMD;
   elevatorCMD = (arr[3]<<8) + arr[2];
-  rudderCMD = (arr[5]<<8) + arr[4];
+//  rudderCMD = (arr[5]<<8) + arr[4]; 
+  rudderCMD = 1500;
 
 //  Serial.println(servo_starboard.attached());
 //  Serial.println(servo_starboard.readMicroseconds());
