@@ -1,0 +1,164 @@
+/**
+   CORE Lab Ocean Kite Project
+   @file KiteSensor.ino
+   @author Zachary B Leonard (zbleonar)
+
+   Developed from Final_Result.ino
+
+   Recieves data from kite's imu and depth sensors.
+   Sends data over UART to UART-RS485 converter.
+*/
+#include "LordIMUdriver.h" // for IMU
+#include "MS5837_CORE.h" // for pressure sensor
+#include <Wire.h>
+//#include <Adafruit_Sensor.h> //TODO is this needed?
+#include <HardwareSerial.h>
+
+MS5837 sensor; // Initializing the BAR02 sensor //TODO change the name from sensor to something better
+
+HardwareSerial SerialRxTx(1); //RX, TX
+
+uint8_t resp;
+
+unsigned long timer0; //TODO delete?
+
+union Data {
+  uint32_t i;
+  float f;
+};
+union Data p;
+union Data x;
+union Data y;
+union Data z;
+union Data wx;
+union Data wy;
+union Data wz;
+
+int t1;
+int t2;
+
+int IMUindex = 0;
+
+char sgData[150]; //TODO delete this!
+
+void setup()
+{
+  // Set up IMU
+  resp = imuInitFromSaved(115200); //Baud rates: 9600,19200,115200,230400,460800,921600
+
+  // Set up UART output to external RS485 module
+  SerialRxTx.begin(115200); //This is the software serial connected to the RX and TX pins. We can't see the output in the COM ports.  //TODO increase by switching to HW serial TODO
+
+  // Set up I2C depth sensor input
+//  Wire.begin();
+//  while (!sensor.init()) {
+//    delay(5000);
+//  }
+//  sensor.setModel(MS5837::MS5837_02BA);
+//  sensor.setFluidDensity(998.2); // kg/m^3 (freshwater, 1029 for seawater)
+
+  // Delay before running loop()
+  delay(1000);
+
+  // Get first depth sensor reading
+//  sensor.readPT1();
+//  delay(20);
+//  sensor.readPT2();
+//  delay(20);
+//  sensor.readPT3();
+
+//  p.f = sensor.pressure();
+//  d.f = sensor.depth();
+
+  // Light red LED
+  pinMode(13, OUTPUT);  //Used for checking if UART to RS485 transceiver is working (switching on the LED)
+  digitalWrite(13, HIGH);
+}
+
+void nextIMUsample() {
+  // Get next imu packet
+  imuNext(&x.i, &y.i, &z.i, &wx.i, &wy.i, &wz.i);
+  //  x.f *= 180/3.14159;
+  //  y.f *= 180/3.14159;
+  //  z.f *= 180/3.14159;
+  //  wx.f *= 180/3.14159;
+  //  wy.f *= 180/3.14159;
+  //  wz.f *= 180/3.14159;
+}
+
+void writeToSpeedgoat() {
+  SerialRxTx.write(0x47);
+  SerialRxTx.write(0xBB);
+  SerialRxTx.write(0x3C);
+  SerialRxTx.write(0x2B);
+
+  SerialRxTx.write(x.i >> 24);
+  SerialRxTx.write(x.i >> 16);
+  SerialRxTx.write(x.i >> 8);
+  SerialRxTx.write(x.i);
+
+  SerialRxTx.write(y.i >> 24);
+  SerialRxTx.write(y.i >> 16);
+  SerialRxTx.write(y.i >> 8);
+  SerialRxTx.write(y.i);
+
+  SerialRxTx.write(z.i >> 24);
+  SerialRxTx.write(z.i >> 16);
+  SerialRxTx.write(z.i >> 8);
+  SerialRxTx.write(z.i);
+
+  SerialRxTx.write(wx.i >> 24);
+  SerialRxTx.write(wx.i >> 16);
+  SerialRxTx.write(wx.i >> 8);
+  SerialRxTx.write(wx.i);
+
+  SerialRxTx.write(wy.i >> 24);
+  SerialRxTx.write(wy.i >> 16);
+  SerialRxTx.write(wy.i >> 8);
+  SerialRxTx.write(wy.i);
+
+  SerialRxTx.write(wz.i >> 24);
+  SerialRxTx.write(wz.i >> 16);
+  SerialRxTx.write(wz.i >> 8);
+  SerialRxTx.write(wz.i);
+
+  SerialRxTx.write(p.i >> 24);
+  SerialRxTx.write(p.i >> 16);
+  SerialRxTx.write(p.i >> 8);
+  SerialRxTx.write(p.i);
+  
+}
+
+void loop()
+{
+  // Wait for IMU sample
+  imuSerialFlush();
+  while (imuSerialAvailable() < 38) {
+//    delayMicroseconds(100);
+    delay(1);
+  }
+
+  // Begin next depth sensor reading and get timer start time
+//  sensor.readPT1(); //need to do work for ??ms after this call
+
+  // Get and transmit an IMU sample
+  nextIMUsample(); // Get an IMU sample
+//  writeToSpeedgoat(); // Transmit IMU and old pressure data
+
+  // Wait for depth sensor
+//  delayMicroseconds(700);
+//  delay(2);
+
+  // Continue next depth sensor reading
+//  sensor.readPT2(); //need to do work for ??ms after this call
+
+  // Wait for depth sensor
+//  delayMicroseconds(700);
+//  delay(2);
+
+  // Finish depth sensor calc and get depth sensor reading
+//  sensor.readPT3();
+//  p.f = sensor.pressure();
+//  d.f = sensor.depth();
+  writeToSpeedgoat(); // Transmit pressure data and old IMU data
+}

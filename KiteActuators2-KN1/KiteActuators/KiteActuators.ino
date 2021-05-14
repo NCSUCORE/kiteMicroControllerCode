@@ -56,6 +56,7 @@ void loop() {
     }
   }
 
+  
   for (int i = 0; i < 6; i++) {
     arr[i] = mySerial.read();
   }
