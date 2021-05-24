@@ -1,0 +1,3 @@
+//14 32 12 15 for new kite. 14 12 32 15 for old kite. - SPER
+
+New kite is the kite in use from 26th May.
