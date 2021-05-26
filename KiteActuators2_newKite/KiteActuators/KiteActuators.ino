@@ -30,7 +30,7 @@ void setup() {
 
   servo_starboard.attach(14,1334,1666); //14 32 12 15 for new kite. 14 12 32 15 for old kite. - SPER
   servo_port.attach(32,1334,1666);
-  servo_elevator.attach(12,1222,1778);
+  servo_elevator.attach(12,1072,2072);
   servo_rudder.attach(15,1334,1666);
 
   servo_starboard.writeMicroseconds(starCMD);
