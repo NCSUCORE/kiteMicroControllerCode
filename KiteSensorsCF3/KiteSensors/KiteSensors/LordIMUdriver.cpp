@@ -27,9 +27,9 @@ uint8_t imuSerialAvailable()
 
 uint8_t imuGetData()
 {
-  while(imuSerialAvailable() == 0) {
-    //do nothing
-  }
+//  while(imuSerialAvailable() == 0) {
+//    //do nothing
+//  }
   return Serial3327.read();
 }
 
@@ -519,7 +519,7 @@ uint8_t imuNext(uint32_t *x, uint32_t *y, uint32_t *z, uint32_t *wx, uint32_t *w
 {
   //Declare variables
   uint8_t lenPayload;
-  uint8_t MIPdata[70]; //TODO reduce to ?? TODO
+  uint8_t MIPdata[100]; //TODO reduce to ?? TODO
   uint8_t MIPindex;
   uint8_t len;
   uint32_t *states[] = {x,y,z,wx,wy,wz,ax,ay,az};

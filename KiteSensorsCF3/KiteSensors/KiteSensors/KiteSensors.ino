@@ -41,6 +41,9 @@ union Data ax;
 union Data ay;
 union Data az;
 
+//array
+uint8_t arr[40];
+
 int t1;
 int t2;
 
@@ -50,6 +53,10 @@ char sgData[150]; //TODO delete this!
 
 void setup()
 {
+
+  //Serial.begin(230400);
+  //Serial.println("Starting...");
+
   // Set up IMU
   resp = imuInitFromSaved(921600); //Baud rates: 9600,19200,115200,230400,460800,921600
 
@@ -82,6 +89,9 @@ void setup()
   // Light red LED
   pinMode(13, OUTPUT);  //Used for checking if UART to RS485 transceiver is working (switching on the LED)
   digitalWrite(13, HIGH);
+
+  // Flush IMU serial reading UART buffer
+  imuSerialFlush();
 }
 
 void nextIMUsample() {
@@ -96,70 +106,113 @@ void nextIMUsample() {
 }
 
 void writeToSpeedgoat() {
+//  Serial.printf("%f\n",x.f);
+//  Serial.printf("%f\n",y.f);
+//  Serial.printf("%f\n",z.f);
+//
+//  Serial.printf("%f\n",wx.f);
+//  Serial.printf("%f\n",wy.f);
+//  Serial.printf("%f\n",wz.f);
+//
+//  Serial.printf("%f\n",ax.f);
+//  Serial.printf("%f\n",ay.f);
+//  Serial.printf("%f\n",az.f);
+  
   SerialRxTx.write(0x47);
   SerialRxTx.write(0xBB);
   SerialRxTx.write(0x3C);
   SerialRxTx.write(0x2B);
-//  Serial.printf("%d",x.i >> 24);
-//  Serial.printf("%d",x.i >> 16);
-//  Serial.printf("%d",x.i >> 8);
-//  Serial.printf("%d",x.i);
-//
-//  Serial.printf("%d",y.i >> 24);
-//  Serial.printf("%d",y.i >> 16);
-//  Serial.printf("%d",y.i >> 8);
-//  Serial.printf("%d",y.i);
-//
-//  Serial.printf("%d",z.i >> 24);
-//  Serial.printf("%d",z.i >> 16);
-//  Serial.printf("%d",z.i >> 8);
-//  Serial.printf("%d",z.i);
-  
+
   SerialRxTx.write(x.i >> 24);
+  arr[0] = x.i >> 24;
   SerialRxTx.write(x.i >> 16);
+  arr[1] = x.i >> 16;
   SerialRxTx.write(x.i >> 8);
+  arr[2] = x.i >> 8;
   SerialRxTx.write(x.i);
+  arr[3] = x.i;
 
   SerialRxTx.write(y.i >> 24);
+  arr[4] = y.i >> 24;
   SerialRxTx.write(y.i >> 16);
+  arr[5] = y.i >> 16;
   SerialRxTx.write(y.i >> 8);
+  arr[6] = y.i >> 8;
   SerialRxTx.write(y.i);
+  arr[7] = y.i;
 
   SerialRxTx.write(z.i >> 24);
+  arr[8] = z.i >> 24;
   SerialRxTx.write(z.i >> 16);
+  arr[9] = z.i >> 16;
   SerialRxTx.write(z.i >> 8);
+  arr[10] = z.i >> 8;
   SerialRxTx.write(z.i);
+  arr[11] = z.i;
 
   SerialRxTx.write(wx.i >> 24);
+  arr[12] = wx.i >> 24;
   SerialRxTx.write(wx.i >> 16);
+  arr[13] = wx.i >> 16;
   SerialRxTx.write(wx.i >> 8);
+  arr[14] = wx.i >> 8;
   SerialRxTx.write(wx.i);
+  arr[15] = wx.i;
 
   SerialRxTx.write(wy.i >> 24);
+  arr[16] = wy.i >> 24;
   SerialRxTx.write(wy.i >> 16);
+  arr[17] = wy.i >> 16;
   SerialRxTx.write(wy.i >> 8);
+  arr[18] = wy.i >> 8;
   SerialRxTx.write(wy.i);
+  arr[19] = wy.i;
 
   SerialRxTx.write(wz.i >> 24);
+  arr[20] = wz.i >> 24;
   SerialRxTx.write(wz.i >> 16);
+  arr[21] = wz.i >> 16;
   SerialRxTx.write(wz.i >> 8);
+  arr[22] = wz.i >> 8;
   SerialRxTx.write(wz.i);
+  arr[23] = wz.i;
 
   SerialRxTx.write(ax.i >> 24);
+  arr[24] = ax.i >> 24;
   SerialRxTx.write(ax.i >> 16);
+  arr[25] = ax.i >> 16;
   SerialRxTx.write(ax.i >> 8);
+  arr[26] = ax.i >> 8;
   SerialRxTx.write(ax.i);
+  arr[27] = ax.i;
 
   SerialRxTx.write(ay.i >> 24);
+  arr[28] = ay.i >> 24;
   SerialRxTx.write(ay.i >> 16);
+  arr[29] = ay.i >> 16;
   SerialRxTx.write(ay.i >> 8);
+  arr[30] = ay.i >> 8;
   SerialRxTx.write(ay.i);
+  arr[31] = ay.i;
 
   SerialRxTx.write(az.i >> 24);
+  arr[32] = az.i >> 24;
   SerialRxTx.write(az.i >> 16);
+  arr[33] = az.i >> 16;
   SerialRxTx.write(az.i >> 8);
+  arr[34] = az.i >> 8;
   SerialRxTx.write(az.i);
-//  Serial.println("g");
+  arr[35] = az.i;
+  arr[36] = 0;
+  arr[37] = 0;
+  arr[38] = 0;
+  arr[39] = 0;
+
+  // Checksum
+  uint16_t checksum = checksumCalc(arr,40);
+  SerialRxTx.write(checksum >> 8);
+  SerialRxTx.write(checksum);
+
 //  SerialRxTx.write(t.i >> 24);
 //  SerialRxTx.write(t.i >> 16);
 //  SerialRxTx.write(t.i >> 8);
@@ -182,6 +235,7 @@ void loop()
 
   // Get and transmit an IMU sample
   nextIMUsample(); // Get an IMU sample
+  
 //  writeToSpeedgoat(); // Transmit IMU and old pressure data
 //Serial.println("C");
   // Wait for depth sensor
@@ -201,4 +255,15 @@ void loop()
 //  d.f = sensor.depth();
   writeToSpeedgoat(); // Transmit pressure data and old IMU data
   //Serial.println("D");
+}
+
+uint16_t checksumCalc(uint8_t *cmd, uint8_t cmdLen)
+{
+  uint8_t checksum_b1 = 0;
+  uint8_t checksum_b2 = 0;
+  for (int i = 0; i < cmdLen; i++) {
+    checksum_b1 += cmd[i];
+    checksum_b2 += checksum_b1;
+  }
+  return ((uint16_t) checksum_b1 << 8) + (uint16_t) checksum_b2;
 }
