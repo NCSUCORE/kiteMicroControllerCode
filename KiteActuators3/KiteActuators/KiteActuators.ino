@@ -20,14 +20,14 @@ int portCMD = 1500;
 int elevatorCMD = 1500;
 int rudderCMD = 1500;
 
-int starCMDmin = 1334;
-int starCMDmax = 1666;
-int portCMDmin = 1334;
-int portCMDmax = 1666;
-int elevCMDmin = 1072;
-int elevCMDmax = 2072;
-int rudderCMDmin = 1334;
-int rudderCMDmax = 1666;
+//int starCMDmin = 1200;
+//int starCMDmax = 1800;
+//int portCMDmin = 1200;
+//int portCMDmax = 1800;
+//int elevCMDmin = 1072;
+//int elevCMDmax = 2072;
+//int rudderCMDmin = 1334;
+//int rudderCMDmax = 1666;
 
 void setup() {
 
@@ -37,10 +37,10 @@ void setup() {
   digitalWrite(13, LOW);
   mySerial.begin(115200);
 
-  servo_starboard.attach(14,1334,1666); //14 32 12 15 for new kite. 14 12 32 15 for old kite. - SPER
-  servo_port.attach(32,1334,1666);
+  servo_starboard.attach(14,1200,1800); //14 32 12 15 for new kite. 14 12 32 15 for old kite. - SPER
+  servo_port.attach(32,1200,1800);
   servo_elevator.attach(12,1072,2072);
-  servo_rudder.attach(15,1334,1666);
+  servo_rudder.attach(15,1000,2000);
 
   servo_starboard.writeMicroseconds(starCMD);
   servo_port.write(portCMD);
@@ -77,6 +77,10 @@ void loop() {
   if (checksumRec == checksumCalc) {
     starCMD = 3000-((arr[1]<<8) + arr[0]);
     portCMD = starCMD;
+
+    //    Adding a bias to star and port commands 
+    starCMD = starCMD - 36; 
+    portCMD = portCMD + 72; 
     elevatorCMD = (arr[3]<<8) + arr[2];
     rudderCMD = (arr[5]<<8) + arr[4];
 
@@ -87,12 +91,12 @@ void loop() {
 //    Serial.print(", ");
 //    Serial.println(rudderCMD);
 
-    if (starCMD>starCMDmin && starCMD<starCMDmax) {
+    
       servo_starboard.writeMicroseconds(starCMD);
       servo_port.writeMicroseconds(portCMD);
       servo_elevator.writeMicroseconds(elevatorCMD);
       servo_rudder.writeMicroseconds(rudderCMD);
-    }
+    
   }
 }
 
