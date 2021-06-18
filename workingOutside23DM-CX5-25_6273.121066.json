@@ -1,0 +1,169 @@
+{
+    "document" : {
+        "version" : 1,
+        "dateCreated" : "2021-06-18 19:37:56",
+        "sensorConnectVersion" : {
+            "major" : 14,
+            "minor" : 1,
+            "patch" : 7
+        },
+        "msclVersion" : {
+            "major" : 62,
+            "minor" : 0,
+            "patch" : 1
+        }
+    },
+    "device" : {
+        "name" : "3DMCX5-AHRS",
+        "modelNumber" : "6273-4260",
+        "serialNumber" : "6273.121066",
+        "firmwareVersion" : "1.1.76",
+        "deviceOptions" : "8g,300dps"
+    },
+    "state" : {
+        "0C08" : {
+            "name" : "IMU Message Format",
+            "commands" : [ "75650C0404080100F7F1" ]
+        },
+        "0C0A" : {
+            "name" : "Estimation Filter Message Format",
+            "commands" : [ "75650C0D0D0A01030D00050500050E00053DC2" ]
+        },
+        "0C11" : {
+            "name" : "Enable/Disable Device Continuous Data Stream",
+            "commands" : [ "75650C050511010101041A", "75650C050511010301061E" ]
+        },
+        "0C37" : {
+            "name" : "Accel Bias",
+            "commands" : [ "75650C0F0F37010000000000000000000000003C75" ]
+        },
+        "0C38" : {
+            "name" : "Gyro Bias",
+            "commands" : [ "75650C0F0F3801BA231BBE3AEDC5A83A984E1CC311" ]
+        },
+        "0C3A" : {
+            "name" : "Magnetometer Hard Iron Offset",
+            "commands" : [ "75650C0F0F3A013E53606EBDB54D493DEDD5DA7F0B" ]
+        },
+        "0C3B" : {
+            "name" : "Magnetometer Soft Iron Matrix",
+            "commands" : [ "75650C27273B013F8000000000000000000000000000003F8000000000000000000000000000003F800000AD59" ]
+        },
+        "0C3E" : {
+            "name" : "Coning and Sculling Enable",
+            "commands" : [ "75650C04043E01012E94" ]
+        },
+        "0C40" : {
+            "name" : "Change UART Baud Rate",
+            "commands" : [ "75650C07074001000E1000539D" ]
+        },
+        "0C50" : {
+            "name" : "Advanced Low-Pass Filter Settings",
+            "commands" : [ "75650C090950010401000000004E80", "75650C090950010501000000004F86", "75650C09095001060100000000508C", "75650C0909500117000000000060ED" ]
+        },
+        "0C51" : {
+            "name" : "Complementary Filter Settings",
+            "commands" : [ "75650C0D0D510101014120000041200000165E" ]
+        },
+        "0D11" : {
+            "name" : "Sensor to Vehicle Frame Rotation Euler Angles",
+            "commands" : [ "75650D0F0F11010000000080000000000000009772" ]
+        },
+        "0D14" : {
+            "name" : "Estimation Control Flags",
+            "commands" : [ "75650D05051401000F1539" ]
+        },
+        "0D18" : {
+            "name" : "Heading Update Control",
+            "commands" : [ "75650D04041801010928" ]
+        },
+        "0D19" : {
+            "name" : "Auto-Initialization Control",
+            "commands" : [ "75650D04041901010A2B" ]
+        },
+        "0D1A" : {
+            "name" : "Accelerometer Noise Standard Deviation",
+            "commands" : [ "75650D0F0F1A013DCCCCCD3DCCCCCD3DCCCCCD06BF" ]
+        },
+        "0D1B" : {
+            "name" : "Gyroscope Noise Standard Deviation",
+            "commands" : [ "75650D0F0F1B01390637BD390637BD390637BDBAC5" ]
+        },
+        "0D1D" : {
+            "name" : "Gyroscope Bias Model Parameters",
+            "commands" : [ "75650D1B1B1D010000000000000000000000003727C5AC3727C5AC3727C5ACA89B" ]
+        },
+        "0D20" : {
+            "name" : "Zero Angular Rate Update Control",
+            "commands" : [ "75650D08082001013C56A162AE5E" ]
+        },
+        "0D26" : {
+            "name" : "Set Reference Position",
+            "commands" : [ "75650D1C1C26010000000000000000000000000000000000000000000000000046B9" ]
+        },
+        "0D28" : {
+            "name" : "Gravity Noise Standard Deviation",
+            "commands" : [ "75650D0F0F28013DCCCCCD3DCCCCCD3DCCCCCD1483" ]
+        },
+        "0D2B" : {
+            "name" : "Hard Iron Offset Process Noise",
+            "commands" : [ "75650D0F0F2B0138D1B71738D1B71738D1B717B67A" ]
+        },
+        "0D2C" : {
+            "name" : "Soft Iron Matrix Process Noise",
+            "commands" : [ "75650D27272C0138D1B71738D1B71738D1B71738D1B71738D1B71738D1B71738D1B71738D1B71738D1B717F18C" ]
+        },
+        "0D41" : {
+            "name" : "Enable/Disable Measurements",
+            "commands" : [ "75650D05054101000336E1" ]
+        },
+        "0D42" : {
+            "name" : "Magnetometer Noise Standard Deviation",
+            "commands" : [ "75650D0F0F42013DCCCCCD3DCCCCCD3DCCCCCD2EEF" ]
+        },
+        "0D43" : {
+            "name" : "Declination Source",
+            "commands" : [ "75650D0808430101000000003CBD" ]
+        },
+        "0D43" : {
+            "name" : "Declination Source",
+            "commands" : [ "75650D0808430101000000003CBD" ]
+        },
+        "0D44" : {
+            "name" : "Gravity Magnitude Error Adaptive Measurement",
+            "commands" : [ "75650D040444010236AD" ]
+        },
+        "0D45" : {
+            "name" : "Magnetometer Magnitude Error Adaptive Measurement",
+            "commands" : [ "75650D040445010237B0" ]
+        },
+        "0D46" : {
+            "name" : "Magnetometer Dip Angle Error Adaptive Measurement",
+            "commands" : [ "75650D040446010036B1" ]
+        },
+        "0D4B" : {
+            "name" : "Pitch-Roll Aiding Control",
+            "commands" : [ "75650D04044B01013CC1" ]
+        },
+        "0D4C" : {
+            "name" : "Inclination Source",
+            "commands" : [ "75650D08084C01010000000045FC" ]
+        },
+        "0D4D" : {
+            "name" : "Field Magnitude Source",
+            "commands" : [ "75650D08084D01013F00000085FF" ]
+        },
+        "0D4E" : {
+            "name" : "Sensor to Vehicle Frame Rotation DCM",
+            "commands" : [ "75650D27274E013F8000000000000000000000000000003F8000000000000000000000000000003F800000C154" ]
+        },
+        "0D4F" : {
+            "name" : "Sensor to Vehicle Frame Rotation Quaternion",
+            "commands" : [ "75650D13134F013F8000008000000080000000800000009C36" ]
+        },
+        "7F10" : {
+            "name" : "Communication Mode",
+            "commands" : [ "75657F040410010173BC" ]
+        }
+    }
+}
