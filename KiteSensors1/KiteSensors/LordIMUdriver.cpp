@@ -548,15 +548,18 @@ uint8_t imuNext(uint32_t *x, uint32_t *y, uint32_t *z, uint32_t *wx, uint32_t *w
       if(MIPdata[MIPindex++] == filterHeader) {
         MIPdata[MIPindex++] = imuGetData();//total length
 
+        int offset1;
+        int offset2;
+        int offset3;
         //Calc offsets
-        if(filterHeader = 0x82) {
-          int offset1 = 6;
-          int offset2 = 10;
-          int offset3 = 14; 
-        } else if (filterHeader = 0x80) {
-          int offset1 = 6;
-          int offset2 = 8;
-          int offset3 = 10;
+        if(filterHeader == 0x82) {
+          offset1 = 6;
+          offset2 = 10;
+          offset3 = 14; 
+        } else if (filterHeader == 0x80) {
+          offset1 = 6;
+          offset2 = 8;
+          offset3 = 10;
         }
         
         //Recieve first payload (Euler angles)
@@ -571,7 +574,7 @@ uint8_t imuNext(uint32_t *x, uint32_t *y, uint32_t *z, uint32_t *wx, uint32_t *w
         for(int i = 0; i < 3; i++) {
             *states[i] = 0x00000000;
           for(int j = 0; j < 4; j++) {
-            *states[i] |= MIPdata[4*i+j+6] << 8*(3-j);
+            *states[i] |= MIPdata[4*i+j+offset1] << 8*(3-j);
           }
         }
         
@@ -587,7 +590,7 @@ uint8_t imuNext(uint32_t *x, uint32_t *y, uint32_t *z, uint32_t *wx, uint32_t *w
         for(int i = 3; i < 6; i++) {
             *states[i] = 0x00000000;
           for(int j = 0; j < 4; j++) {
-            *states[i] |= MIPdata[4*i+j+10] << 8*(3-j);
+            *states[i] |= MIPdata[4*i+j+offset2] << 8*(3-j);
           }
         }
 
@@ -603,7 +606,7 @@ uint8_t imuNext(uint32_t *x, uint32_t *y, uint32_t *z, uint32_t *wx, uint32_t *w
         for(int i = 6; i < 9; i++) {
             *states[i] = 0x00000000;
           for(int j = 0; j < 4; j++) {
-            *states[i] |= MIPdata[4*i+j+14] << 8*(3-j);
+            *states[i] |= MIPdata[4*i+j+offset3] << 8*(3-j);
           }
         }
         
