@@ -10,7 +10,7 @@
 */
 #include "LordIMUdriver.h" // for IMU
 #include "MS5837_CORE.h" // for pressure sensor
-#include <Wire.h>
+#include "Wire.h"
 #include <Adafruit_Sensor.h> //TODO is this needed?
 #include <HardwareSerial.h>
 
@@ -43,8 +43,9 @@ union Data az;
 //pressure
 union Data p;
 
-//array
-uint8_t arr[40];
+//send arrays
+uint8_t arrSendIMU[40];
+uint8_t arrSendPressure[4];
 
 int t1;
 int t2;
@@ -56,16 +57,14 @@ char sgData[150]; //TODO delete this!
 void setup()
 {
 
-//  Serial.begin(115200);
-//  Serial.println("Starting...");
+  //Serial.begin(230400);
+  //Serial.println("Starting...");
 
   // Set up IMU
   resp = imuInitFromSaved(921600, 0x80); //Baud rates: 9600,19200,115200,230400,460800,921600 //filterHeaders: 0x82=EKF 0x80=CF
 
   // Set up UART output to external RS485 module
-  SerialRxTx.begin(230400); //This is the software serial connected to the RX and TX pins. We can't see the output in the COM ports.  //TODO increase by switching to HW serial TODO
-//Serial.begin(230400);//TEST
-//Serial.println("test");
+  SerialRxTx.begin(921600); //This is the UART connected to the RX and TX pins
 
   // Set up I2C depth sensor input
   Wire.begin();
@@ -109,7 +108,7 @@ void nextIMUsample() {
   imuNext(&x.i, &y.i, &z.i, &wx.i, &wy.i, &wz.i, &ax.i, &ay.i, &az.i);
 }
 
-void writeToSpeedgoat() {
+void writeToSpeedgoatIMU() {
 //  Serial.printf("%f\n",x.f);
 //  Serial.printf("%f\n",y.f);
 //  Serial.printf("%f\n",z.f);
@@ -128,130 +127,146 @@ void writeToSpeedgoat() {
   SerialRxTx.write(0x2B);
 
   SerialRxTx.write(x.i >> 24);
-  arr[0] = x.i >> 24;
+  arrSendIMU[0] = x.i >> 24;
   SerialRxTx.write(x.i >> 16);
-  arr[1] = x.i >> 16;
+  arrSendIMU[1] = x.i >> 16;
   SerialRxTx.write(x.i >> 8);
-  arr[2] = x.i >> 8;
+  arrSendIMU[2] = x.i >> 8;
   SerialRxTx.write(x.i);
-  arr[3] = x.i;
+  arrSendIMU[3] = x.i;
 
   SerialRxTx.write(y.i >> 24);
-  arr[4] = y.i >> 24;
+  arrSendIMU[4] = y.i >> 24;
   SerialRxTx.write(y.i >> 16);
-  arr[5] = y.i >> 16;
+  arrSendIMU[5] = y.i >> 16;
   SerialRxTx.write(y.i >> 8);
-  arr[6] = y.i >> 8;
+  arrSendIMU[6] = y.i >> 8;
   SerialRxTx.write(y.i);
-  arr[7] = y.i;
+  arrSendIMU[7] = y.i;
 
   SerialRxTx.write(z.i >> 24);
-  arr[8] = z.i >> 24;
+  arrSendIMU[8] = z.i >> 24;
   SerialRxTx.write(z.i >> 16);
-  arr[9] = z.i >> 16;
+  arrSendIMU[9] = z.i >> 16;
   SerialRxTx.write(z.i >> 8);
-  arr[10] = z.i >> 8;
+  arrSendIMU[10] = z.i >> 8;
   SerialRxTx.write(z.i);
-  arr[11] = z.i;
+  arrSendIMU[11] = z.i;
 
   SerialRxTx.write(wx.i >> 24);
-  arr[12] = wx.i >> 24;
+  arrSendIMU[12] = wx.i >> 24;
   SerialRxTx.write(wx.i >> 16);
-  arr[13] = wx.i >> 16;
+  arrSendIMU[13] = wx.i >> 16;
   SerialRxTx.write(wx.i >> 8);
-  arr[14] = wx.i >> 8;
+  arrSendIMU[14] = wx.i >> 8;
   SerialRxTx.write(wx.i);
-  arr[15] = wx.i;
+  arrSendIMU[15] = wx.i;
 
   SerialRxTx.write(wy.i >> 24);
-  arr[16] = wy.i >> 24;
+  arrSendIMU[16] = wy.i >> 24;
   SerialRxTx.write(wy.i >> 16);
-  arr[17] = wy.i >> 16;
+  arrSendIMU[17] = wy.i >> 16;
   SerialRxTx.write(wy.i >> 8);
-  arr[18] = wy.i >> 8;
+  arrSendIMU[18] = wy.i >> 8;
   SerialRxTx.write(wy.i);
-  arr[19] = wy.i;
+  arrSendIMU[19] = wy.i;
 
   SerialRxTx.write(wz.i >> 24);
-  arr[20] = wz.i >> 24;
+  arrSendIMU[20] = wz.i >> 24;
   SerialRxTx.write(wz.i >> 16);
-  arr[21] = wz.i >> 16;
+  arrSendIMU[21] = wz.i >> 16;
   SerialRxTx.write(wz.i >> 8);
-  arr[22] = wz.i >> 8;
+  arrSendIMU[22] = wz.i >> 8;
   SerialRxTx.write(wz.i);
-  arr[23] = wz.i;
+  arrSendIMU[23] = wz.i;
 
   SerialRxTx.write(ax.i >> 24);
-  arr[24] = ax.i >> 24;
+  arrSendIMU[24] = ax.i >> 24;
   SerialRxTx.write(ax.i >> 16);
-  arr[25] = ax.i >> 16;
+  arrSendIMU[25] = ax.i >> 16;
   SerialRxTx.write(ax.i >> 8);
-  arr[26] = ax.i >> 8;
+  arrSendIMU[26] = ax.i >> 8;
   SerialRxTx.write(ax.i);
-  arr[27] = ax.i;
+  arrSendIMU[27] = ax.i;
 
   SerialRxTx.write(ay.i >> 24);
-  arr[28] = ay.i >> 24;
+  arrSendIMU[28] = ay.i >> 24;
   SerialRxTx.write(ay.i >> 16);
-  arr[29] = ay.i >> 16;
+  arrSendIMU[29] = ay.i >> 16;
   SerialRxTx.write(ay.i >> 8);
-  arr[30] = ay.i >> 8;
+  arrSendIMU[30] = ay.i >> 8;
   SerialRxTx.write(ay.i);
-  arr[31] = ay.i;
+  arrSendIMU[31] = ay.i;
 
   SerialRxTx.write(az.i >> 24);
-  arr[32] = az.i >> 24;
+  arrSendIMU[32] = az.i >> 24;
   SerialRxTx.write(az.i >> 16);
-  arr[33] = az.i >> 16;
+  arrSendIMU[33] = az.i >> 16;
   SerialRxTx.write(az.i >> 8);
-  arr[34] = az.i >> 8;
+  arrSendIMU[34] = az.i >> 8;
   SerialRxTx.write(az.i);
-  arr[35] = az.i;
+  arrSendIMU[35] = az.i;
 
-//  arr[36] = 0;
-//  arr[37] = 0;
-//  arr[38] = 0;
-//  arr[39] = 0;
-  
-  SerialRxTx.write(p.i >> 24);
-  arr[36] = p.i >> 24;
-  SerialRxTx.write(p.i >> 16);
-  arr[37] = p.i >> 16;
-  SerialRxTx.write(p.i >> 8);
-  arr[38] = p.i >> 8;
-  SerialRxTx.write(p.i);
-  arr[39] = p.i;
+  arrSendIMU[36] = 0;
+  arrSendIMU[37] = 0;
+  arrSendIMU[38] = 0;
+  arrSendIMU[39] = 0;
 
   // Checksum
-  uint16_t checksum = checksumCalc(arr,40);
+  uint16_t checksum = checksumCalc(arrSendIMU,40);
   SerialRxTx.write(checksum >> 8);
   SerialRxTx.write(checksum);
-  
+}
+
+void writeToSpeedgoatPressure() {
+  //Serial.println("sendP");
+  //Serial.printf("%f\n",p.f);
+
+  // Header
+  SerialRxTx.write(0x58);
+  SerialRxTx.write(0xCC);
+  SerialRxTx.write(0x4D);
+  SerialRxTx.write(0x3C);
+
+  // Data
+  SerialRxTx.write(p.i >> 24);
+  arrSendPressure[0] = p.i >> 24;
+  SerialRxTx.write(p.i >> 16);
+  arrSendPressure[1] = p.i >> 16;
+  SerialRxTx.write(p.i >> 8);
+  arrSendPressure[2] = p.i >> 8;
+  SerialRxTx.write(p.i);
+  arrSendPressure[3] = p.i;
+
+  // Checksum
+  uint16_t checksum = checksumCalc(arrSendPressure,4);
+  SerialRxTx.write(checksum >> 8);
+  SerialRxTx.write(checksum);
 }
 
 void loop()
 {
   // Get and transmit an IMU sample (with old pressure data)
   nextIMUsample(); // Get an IMU sample
-//  writeToSpeedgoat(); // Transmit IMU and old pressure data
+  //writeToSpeedgoatIMU(); // Transmit IMU data
 
   // Begin next depth sensor reading and get timer start time
   sensor.readPT1(); //need to do work for ??ms after this call
   // Wait for depth sensor
-  delayMicroseconds(700);
+  delayMicroseconds(1400);
   //delay(2);
 
   // Continue next depth sensor reading
   sensor.readPT2(); //need to do work for ??ms after this call
   // Wait for depth sensor
-  delayMicroseconds(700);
+  delayMicroseconds(1400);
   //delay(2);
 
   // Finish depth sensor calc and get depth sensor and IMU readings
   sensor.readPT3();
   p.f = sensor.pressure();
-//  nextIMUsample(); // Get an IMU sample
-  writeToSpeedgoat(); // Transmit IMU and pressure data
+  writeToSpeedgoatPressure(); // Transmit Pressure data
+
 }
 
 uint16_t checksumCalc(uint8_t *cmd, uint8_t cmdLen)
