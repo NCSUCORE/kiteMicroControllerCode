@@ -14,7 +14,7 @@
 #include <Adafruit_Sensor.h> //TODO is this needed?
 #include <HardwareSerial.h>
 
-MS5837 sensor; // Initializing the BAR02 sensor //TODO change the name from sensor to something better
+MS5837 sensor; // Initializing the pressure sensor //TODO change the name from sensor to something better
 
 HardwareSerial SerialRxTx(1); //RX, TX
 
@@ -43,6 +43,9 @@ union Data az;
 //pressure
 union Data p;
 
+//pressure sensor index
+int pIndex = 0;
+
 //send arrays
 uint8_t arrSendIMU[40];
 uint8_t arrSendPressure[4];
@@ -57,14 +60,14 @@ char sgData[150]; //TODO delete this!
 void setup()
 {
 
-  //Serial.begin(230400);
+  //Serial.begin(1000000);
   //Serial.println("Starting...");
 
   // Set up IMU
   resp = imuInitFromSaved(921600, 0x80); //Baud rates: 9600,19200,115200,230400,460800,921600 //filterHeaders: 0x82=EKF 0x80=CF
 
   // Set up UART output to external RS485 module
-  SerialRxTx.begin(921600); //This is the UART connected to the RX and TX pins
+  SerialRxTx.begin(115200); //This is the UART connected to the RX and TX pins
 
   // Set up I2C depth sensor input
   Wire.begin();
@@ -91,6 +94,7 @@ void setup()
   pinMode(13, OUTPUT);  //Used for checking if UART to RS485 transceiver is working (switching on the LED)
   digitalWrite(13, HIGH);
 
+  //sensor.readPT1();
   // Flush IMU serial reading UART buffer
   imuSerialFlush();
 }
@@ -102,7 +106,7 @@ void nextIMUsample() {
   // Wait for IMU sample
   while (imuSerialAvailable() < 54) { //54
     delayMicroseconds(1000);
-    //delay(1);
+    //delay(2);
   }
   // Get next imu packet
   imuNext(&x.i, &y.i, &z.i, &wx.i, &wy.i, &wz.i, &ax.i, &ay.i, &az.i);
@@ -219,8 +223,6 @@ void writeToSpeedgoatIMU() {
 }
 
 void writeToSpeedgoatPressure() {
-  //Serial.println("sendP");
-  //Serial.printf("%f\n",p.f);
 
   // Header
   SerialRxTx.write(0x58);
@@ -237,6 +239,7 @@ void writeToSpeedgoatPressure() {
   arrSendPressure[2] = p.i >> 8;
   SerialRxTx.write(p.i);
   arrSendPressure[3] = p.i;
+  //Serial.printf("%f\n",p.f);
 
   // Checksum
   uint16_t checksum = checksumCalc(arrSendPressure,4);
@@ -248,25 +251,32 @@ void loop()
 {
   // Get and transmit an IMU sample (with old pressure data)
   nextIMUsample(); // Get an IMU sample
-  //writeToSpeedgoatIMU(); // Transmit IMU data
-
-  // Begin next depth sensor reading and get timer start time
-  sensor.readPT1(); //need to do work for ??ms after this call
-  // Wait for depth sensor
-  delayMicroseconds(1400);
-  //delay(2);
-
-  // Continue next depth sensor reading
-  sensor.readPT2(); //need to do work for ??ms after this call
-  // Wait for depth sensor
-  delayMicroseconds(1400);
-  //delay(2);
-
-  // Finish depth sensor calc and get depth sensor and IMU readings
-  sensor.readPT3();
-  p.f = sensor.pressure();
-  writeToSpeedgoatPressure(); // Transmit Pressure data
-
+  //sensor.readPT2();
+  writeToSpeedgoatIMU(); // Transmit IMU data
+  SerialRxTx.flush();
+  //if (pIndex > 1) {
+    // Begin next depth sensor reading and get timer start time
+    sensor.readPT1(); //need to do work for ??ms after this call
+    // Wait for depth sensor
+    delayMicroseconds(700);
+    //delay(2);
+  
+    // Continue next depth sensor reading
+    sensor.readPT2(); //need to do work for ??ms after this call
+    // Wait for depth sensor
+    delayMicroseconds(700);
+    //delay(2);
+  
+    // Finish depth sensor calc and get depth sensor and IMU readings
+    sensor.readPT3();
+    p.f = sensor.pressure();
+    writeToSpeedgoatPressure(); // Transmit Pressure data
+    SerialRxTx.flush();
+    //sensor.readPT1();
+  //  pIndex = 0;
+  //} else {
+   // pIndex++;
+ // }
 }
 
 uint16_t checksumCalc(uint8_t *cmd, uint8_t cmdLen)
